@@ -15,7 +15,7 @@ The module contains two different components:
 * `GroupTagModule`: used to tag an entity that belongs to a named group.
 * `HivemindComponent`: used to share a behavior tree among multiple actors.
 
-More details on how these components work can be found in the related blog post (TODO).
+More details on how these components work can be found in the [related blog post](https://casals.io/code/gsoc-reaching-second-milestone/).
 
 ### Creatures 
 
@@ -67,4 +67,4 @@ The main system is composed of five commands:
 
 ### Dependencies
 
-This module depend on PRs XX (core engine) and YY (WildAnimals module).          
+This module depend on PRs [3708 (core engine)](https://github.com/MovingBlocks/Terasology/pull/3708) and [31 (WildAnimals)](https://github.com/Terasology/WildAnimals/pull/31).          
