@@ -15,8 +15,13 @@
  */
 package org.terasology.wildAnimalsMadness.system;
 
+import com.google.common.collect.Lists;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.terasology.assets.ResourceUrn;
 import org.terasology.assets.management.AssetManager;
-import org.terasology.entitySystem.systems.UpdateSubscriberSystem;
+import org.terasology.assets.module.ModuleAwareAssetTypeManager;
+import org.terasology.audio.StaticSound;
 import org.terasology.logic.behavior.BehaviorComponent;
 import org.terasology.logic.behavior.CollectiveBehaviorComponent;
 import org.terasology.logic.behavior.CollectiveInterpreter;
@@ -26,6 +31,8 @@ import org.terasology.logic.behavior.core.Actor;
 import org.terasology.logic.characters.CharacterMovementComponent;
 import org.terasology.rendering.logic.SkeletalMeshComponent;
 import org.terasology.utilities.Assets;
+import org.terasology.wildAnimalsMadness.assets.Group;
+import org.terasology.wildAnimalsMadness.assets.GroupData;
 import org.terasology.wildAnimalsMadness.components.GroupTagComponent;
 import org.terasology.entitySystem.entity.EntityManager;
 import org.terasology.entitySystem.entity.EntityRef;
@@ -37,20 +44,48 @@ import org.terasology.logic.console.commandSystem.annotations.Command;
 import org.terasology.wildAnimalsMadness.components.HivemindComponent;
 
 import javax.annotation.Nullable;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 
 @RegisterSystem(RegisterMode.AUTHORITY)
 public class MadnessSystem extends BaseComponentSystem {
 
+    private static final Logger logger = LoggerFactory.getLogger(MadnessSystem.class);
     @In
     private EntityManager entityManager;
     @In
     private AssetManager assetManager;
 
+    private final Map<String,Group> groups = new HashMap<>();
+
     @Override
     public void initialise() {
+        List<ResourceUrn> uris = Lists.newArrayList();
+        uris.addAll(new ArrayList<>(assetManager.getAvailableAssets(StaticSound.class)));
+        for (ResourceUrn uri : assetManager.getAvailableAssets(Group.class)) {
+            try {
+                Optional<Group> asset = assetManager.getAsset(uri, Group.class);
+                asset.ifPresent(group -> groups.put(group.getGroupLabel(),group));
+                if(groups.isEmpty()) {
+                    logger.info("That's a big nope.", uri);
+                } else {
+                    logger.info("Something happened", uri);
+                    if(groups.containsKey("magenta")) {
+                        logger.info("Magenta group was added.", uri);
+                    }
+                }
+            } catch (RuntimeException e) {
+                logger.info("Failed to load group asset {}.", uri, e);
+            }
+        }
 
+//        Set<ResourceUrn> groupUrns = assetManager.getAvailableAssets(Group.class);
+//        for (ResourceUrn uri: groupUrns) {
+//            Group group = assetManager.loadAsset(uri, new GroupData(), Group.class);
+//            groups.put(group.getGroupLabel(),group);
+//
+//            logger.info("Found group label " + group.getGroupLabel(), uri);
+//
+//        }
     }
 
 
@@ -136,18 +171,47 @@ public class MadnessSystem extends BaseComponentSystem {
     }
 
     /**
-     * Use after groupTestOne
-     * @return
+     * Fourth Group Test:
+     * Objective: restore the original behavior state of an entity
+     * (before it joined a group). The idea is to restore not only
+     * the original BT, but the exact node/state in which the entity
+     * was.
+     * Conditions: for (better) observable results, follow this script:
+     * - spawn cyanDeers;
+     * - run the first group test;
+     * - run the fourth group test.
+     * Restrictions: the entity skin is not restored on purpose.
+     * Entities in the same group are located by a specific
+     * group tag component. This test embeds the posterior development on group identity.
+     * @return success message
      */
-    @Command(shortDescription = "Fourth group test: behavior states.")
+    @Command(shortDescription = "Fourth group test: behavior states. Returns an entity to its original behavior state (before joining a group).")
     public String groupTestFour() {
         recoverBehaviorBackup("magenta");
         return "Friend. Girlfriend. Boyfriend. Everything has an end. Pizza doesn't.";
     }
 
-//    @Command(shortDescription = "Fifth group test: identities for groups/members. Replace with managed asset.")
-//    public String groupTestFour()
+    /**
+     * Fifth Group Test:
+     * Objective: restore group parameters from a file.
+     * Issues: permission rights on modules/WildAnimalsMadness folder.
+     * Needs further investigation.
+     * @return status message
+     */
+    @Command(shortDescription = "Fifth group test: loads group information from .group file.")
+    public String groupTestFive() {
+        //assetManager = new AssetManager(new ModuleAwareAssetTypeManager());
+        Optional<Group> magentaGroup = assetManager.getAsset("engine:magenta", Group.class);
+        return "Loaded group label " + magentaGroup.get().getGroupLabel();
+    }
 
+
+    /**
+     * Nuke Command:
+     * Objective: clean-up a saved game, removing all group-related
+     * entities.
+     * @return success message
+     */
     @Command(shortDescription = "Clean-up.")
     public String nuke() {
         for (EntityRef entityRef : entityManager.getEntitiesWith(HivemindComponent.class)) {
@@ -161,6 +225,14 @@ public class MadnessSystem extends BaseComponentSystem {
         return "The hive is dead. LONG LIVE THE PHALANX";
     }
 
+
+    /**
+     * Assign the same behavior to all entities with the same group label.
+     *
+     * @param groupLabel
+     * @param behavior
+     * @param newGroupSkin
+     */
     private void assignBehaviorToAll(String groupLabel, String behavior, @Nullable String newGroupSkin) {
         for (EntityRef entityRef : entityManager.getEntitiesWith(GroupTagComponent.class)) {
             GroupTagComponent groupTagComponent = entityRef.getComponent(GroupTagComponent.class);

@@ -50,6 +50,11 @@ public class GroupTagComponent implements Component {
      */
     public List<String> groups = new ArrayList<String>();
 
+    /**
+     * Backup fields are used to preserve the original
+     * entity state before joining a group.
+     * TODO: assess need for a parametrized 2D list
+     */
     public BehaviorTree backupBT;
 
     public Interpreter backupRunningState;

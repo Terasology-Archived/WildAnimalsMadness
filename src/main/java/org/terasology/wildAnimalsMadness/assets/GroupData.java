@@ -19,18 +19,38 @@ import org.terasology.assets.AssetData;
 
 /**
  * Every group is described by a GroupData asset.
- * TODO: load asset from .group file
  */
 public class GroupData implements AssetData {
 
-    /**
-     * ID of a pre-defined group
-     */
-    public String groupID;
-
-    /**
-     * Behavior to be applied to all group entities
-     * TODO: see TowerManager
-     */
+    public String groupLabel;
+    public Boolean needsHivemind;
     public String behavior;
+
+    public GroupData() {
+    }
+
+    public String getGroupLabel() {
+        return groupLabel;
+    }
+
+    public void setGroupLabel(String groupLabel) {
+        this.groupLabel = groupLabel;
+    }
+
+    public Boolean getNeedsHivemind() {
+        return needsHivemind;
+    }
+
+    public void setNeedsHivemind(Boolean needsHivemind) {
+        this.needsHivemind = needsHivemind;
+    }
+
+    public String getBehavior() {
+        return behavior;
+    }
+
+    public void setBehavior(String behavior) {
+        this.behavior = behavior;
+    }
+
 }
