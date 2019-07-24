@@ -19,13 +19,13 @@ import org.terasology.assets.Asset;
 import org.terasology.assets.AssetType;
 import org.terasology.assets.ResourceUrn;
 import org.terasology.assets.module.annotations.RegisterAssetType;
+import org.terasology.module.sandbox.API;
 
 @RegisterAssetType(folderName = "groups", factoryClass = GroupFactory.class)
+@API
 public class Group extends Asset<GroupData> {
 
-    private String groupLabel;
-    private String groupBehavior;
-    private Boolean needsHivemind;
+    private GroupData groupData;
 
     public Group(ResourceUrn urn, GroupData data, AssetType<?, GroupData> type) {
         super(urn, type);
@@ -34,20 +34,10 @@ public class Group extends Asset<GroupData> {
 
     @Override
     protected void doReload(GroupData data) {
-        groupLabel = data.getGroupLabel();
-        groupBehavior = data.getBehavior();
-        needsHivemind = data.getNeedsHivemind();
+        this.groupData = data;
     }
 
-    public String getGroupLabel() {
-        return groupLabel;
-    }
-
-    public String getGroupBehavior() {
-        return groupBehavior;
-    }
-
-    public Boolean needsHivemind() {
-        return needsHivemind;
+    public GroupData getGroupData() {
+        return groupData;
     }
 }

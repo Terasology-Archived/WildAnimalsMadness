@@ -33,6 +33,7 @@ import org.terasology.rendering.logic.SkeletalMeshComponent;
 import org.terasology.utilities.Assets;
 import org.terasology.wildAnimalsMadness.assets.Group;
 import org.terasology.wildAnimalsMadness.assets.GroupData;
+import org.terasology.wildAnimalsMadness.assets.GroupFactory;
 import org.terasology.wildAnimalsMadness.components.GroupTagComponent;
 import org.terasology.entitySystem.entity.EntityManager;
 import org.terasology.entitySystem.entity.EntityRef;
@@ -59,33 +60,23 @@ public class MadnessSystem extends BaseComponentSystem {
 
     @Override
     public void initialise() {
+
         List<ResourceUrn> uris = Lists.newArrayList();
         uris.addAll(new ArrayList<>(assetManager.getAvailableAssets(StaticSound.class)));
         for (ResourceUrn uri : assetManager.getAvailableAssets(Group.class)) {
             try {
                 Optional<Group> asset = assetManager.getAsset(uri, Group.class);
-                asset.ifPresent(group -> groups.put(group.getGroupLabel(),group));
+                asset.ifPresent(group -> groups.put(group.getGroupData().getGroupLabel(),group));
                 if(groups.isEmpty()) {
                     logger.info("That's a big nope.", uri);
                 } else {
                     logger.info("Something happened", uri);
-                    if(groups.containsKey("magenta")) {
-                        logger.info("Magenta group was added.", uri);
-                    }
+
                 }
             } catch (RuntimeException e) {
-                logger.info("Failed to load group asset {}.", uri, e);
+                logger.info("Failed to load groups.", uri, e);
             }
         }
-
-//        Set<ResourceUrn> groupUrns = assetManager.getAvailableAssets(Group.class);
-//        for (ResourceUrn uri: groupUrns) {
-//            Group group = assetManager.loadAsset(uri, new GroupData(), Group.class);
-//            groups.put(group.getGroupLabel(),group);
-//
-//            logger.info("Found group label " + group.getGroupLabel(), uri);
-//
-//        }
     }
 
 
@@ -201,8 +192,9 @@ public class MadnessSystem extends BaseComponentSystem {
     @Command(shortDescription = "Fifth group test: loads group information from .group file.")
     public String groupTestFive() {
         //assetManager = new AssetManager(new ModuleAwareAssetTypeManager());
-        Optional<Group> magentaGroup = assetManager.getAsset("engine:magenta", Group.class);
-        return "Loaded group label " + magentaGroup.get().getGroupLabel();
+        //Optional<Group> magentaGroup = assetManager.getAsset("engine:magenta", Group.class);
+        //return "Loaded group label " + magentaGroup.get().getGroupLabel();
+        return "OYE";
     }
 
 
