@@ -40,14 +40,14 @@ The main system is composed of five commands:
      * **Conditions:** for observable results, use in conjunction with `yellowDeers`.
 
 * **Second Group Test:**
-	 * **Command:** `groupTestTwo`
+     * **Command:** `groupTestTwo`
      * **Objective:** assign the same behavior change to entities in the same group  
      * **Restrictions:** identical behavior changes still do not mean identical actions. Actions can be determined by probabilistic events, and even with identical behavior trees each entity will have its own probability roll.
      * **Conditions:** for observable results, use in conjunction with `cyanDeers` or run `groupTestOne` first. 
 
 * **Third Group Test:**
      * **Command:** `groupTestThree`
-     * **Objective:* assign the same BT to multiple actors at once. The idea is to cover scenarios where synchronized behavior change is not enough. In order for it to be possible, the core engine logic package was extended with a `CollectiveBehaviorComponent` class (and respective tree runner/interpreter).
+     * **Objective:** assign the same BT to multiple actors at once. The idea is to cover scenarios where synchronized behavior change is not enough. In order for it to be possible, the core engine logic package was extended with a `CollectiveBehaviorComponent` class (and respective tree runner/interpreter).
      * **Restrictions:** identical behavior should be observed, with few exceptions (such as random neighbor move in `Behaviors:critter`).
      * **Conditions:** for observable results, use in conjunction with `yellowDeers`.
        
