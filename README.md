@@ -2,7 +2,7 @@
 
 ## Purpose
 
-This module is a showcase for the GSoC 2019 project "Collective Behavior"
+This module is a showcase for the GSoC 2019 project "Collective Behavior". Please see the "Testing" section at the end of this file for instructions on how to proceed.
 
 ## Contents
 
@@ -30,17 +30,25 @@ Entities can be grouped in two differend manners: **groups** and **hives**.
 
 ### Components
 
-The module contains two different components:
+The module contains two different components for group behavior:
 
 * `GroupTagModule`: used to tag entities that belong to one or more groups. This component possesses a list of group identifiers and a "memory" mechanism, comprised of a `BehaviorTree` and an `Interpreter`. These are used to store the original Behavior Tree and the respective state in which the entity was right before joning a group or hive.
 
 * `HiveMindComponent`: used to enforce unison behavior over a hive of entities. It is designed to work in coordination with the `GroupModule` (at this point, only to use the memory mechanism). It also possesses an identifier (used for unique identification), a behavior marker (which allows eventual behavior changes in a simpler manner) and a set of group members (entities).
 
-There is also an additional component used especifically by this module:
+There is also an additional component from the `Behaviors` module used especifically by this module:
 
 * `Behaviors:CollectiveBehavior`: used by `HiveMindComponent` to share a behavior tree among multiple actors. 
 
 More details on how these components work can be found in the [related blog post](https://casals.io/code/gsoc-reaching-second-milestone/).
+
+This module also possess an alpha version of *flocking*, which is used to test emergent behavior (behavior that emerges from a group but does not necessarily requires a unison behavior among its members). The flocking implementation is composed by:
+
+* `flock.behavior`, a behavior tree description;
+* `FlockMoveAction`, used to re-define the movement targets for entities belonging to a flock;
+* `FlockComponent`, used to hold all data related to flocking; and
+* `FlockSystem`, which ensures that the flock is updated whenever a new entity joins it. All flocking data is also shared and updated between the flock members.
+
 
 ### Creatures 
 
@@ -56,7 +64,7 @@ There are four new creatures in this module (CMYK Deers), all having `WildAnimal
 There is a new asset `Group` used to compile all group information when the game is loaded (this allows the user to define/work with groups using JSON files only, similarly to behaviors and prefabs). **This functionaliy is disabled at this time due to a bug on Gestalt**.
 
 ### Commands 
-The main system is composed of six commands:
+The main system is composed of seven commands:
 
 **Load test data:**
    * **Command:** `loadTestData`
@@ -88,6 +96,11 @@ The main system is composed of six commands:
         * run the first group test;
         * run the fourth group test.
      * **Restrictions:** the entity skin is not restored on purpose.
+
+* **Fifth Group Test:**
+     * **Command:** `groupTestFive`
+     * **Objective:** test the flocking behavior. Black deers are assigned a `FlockComponent` and a `flock` behavior. The related system makes sure that the flock parameters are updated whenever a new entity receives a `FlockComponent`. Flocking behavior should make the entities converge to the group center (randomized for emergence emulation).
+     * **Restrictions:** this is very early work. The entities still don't keep a minimal distance from each other. Since the flocking algorithm uses a random reference to establish the group center, flocks tend to get stable in one location until a new entity joins the flock. This test is composed by two steps: in the first one the user spawns a few black deers. Executing the command creates the flock. In the second step, the user spawns an additional black deer, and re-running the command updated the flock.
         
 * **Nuke:**
      * **Command:** `nuke`
@@ -95,4 +108,12 @@ The main system is composed of six commands:
 
 ### Dependencies
 
-This module depend on PRs [3708 (core engine)](https://github.com/MovingBlocks/Terasology/pull/3708) and [31 (WildAnimals)](https://github.com/Terasology/WildAnimals/pull/31).          
+This module depend on PRs [3708 (core engine)](https://github.com/MovingBlocks/Terasology/pull/3708) and [31 (WildAnimals)](https://github.com/Terasology/WildAnimals/pull/31).
+
+### Testing
+
+To make sure your tests run smoothly:
+
+* If you are using a saved game, make sure to run the `nuke` command first. This will ensure no unwanted group entities will interfere with the tests.
+* You **must** run the command `loadTestData` once before starting the tests. This command emulates the group asset loading from the disk. Hives are created here according to each group requirement, but not populated.
+* Please be aware of the restrictions listed for each of the test commands, and feel free to report any issues (feedback is always welcome).
