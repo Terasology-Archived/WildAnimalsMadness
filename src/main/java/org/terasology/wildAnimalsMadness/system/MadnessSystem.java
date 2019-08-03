@@ -18,6 +18,7 @@ package org.terasology.wildAnimalsMadness.system;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.terasology.assets.management.AssetManager;
+import org.terasology.entitySystem.Component;
 import org.terasology.logic.behavior.BehaviorComponent;
 import org.terasology.logic.behavior.CollectiveBehaviorComponent;
 import org.terasology.logic.behavior.CollectiveInterpreter;
@@ -28,6 +29,7 @@ import org.terasology.logic.characters.CharacterMovementComponent;
 import org.terasology.rendering.logic.SkeletalMeshComponent;
 import org.terasology.utilities.Assets;
 import org.terasology.wildAnimalsMadness.assets.GroupData;
+import org.terasology.wildAnimalsMadness.components.FlockComponent;
 import org.terasology.wildAnimalsMadness.components.GroupTagComponent;
 import org.terasology.entitySystem.entity.EntityManager;
 import org.terasology.entitySystem.entity.EntityRef;
@@ -92,7 +94,7 @@ public class MadnessSystem extends BaseComponentSystem {
         logger.info("group: cyan registered");
         groups.put("magenta",new GroupData("magenta",true,"Behaviors:critter"));
         logger.info("group: magenta registered");
-        groups.put("black",new GroupData("black",false,"Behaviors:critter"));
+        groups.put("black",new GroupData("black",false,"flock"));
         logger.info("group: black registered");
 
         //Creates all necessary hives
@@ -238,6 +240,29 @@ public class MadnessSystem extends BaseComponentSystem {
         return "Friend. Girlfriend. Boyfriend. Everything has an end. Pizza doesn't.";
     }
 
+    /**
+     * Fifth Group Test:
+     * Objective: test the flocking behavior. Black deers are assigned
+     * a FlockComponent and a flock behavior. The related system makes sure
+     * that the flock parameters are updated whenever a new entity receives
+     * a FlockComponent. Flocking behavior should make the entities converge
+     * to the group center (randomized for emergence emulation).
+     * Restrictions: this is very early work. The entities still don't keep
+     * a minimal distance from each other. Since the flocking algorithm
+     * uses a random reference to establish the group center, flocks
+     * tend to get stable in one location until a new entity joins the flock.
+     * This test is composed by two steps: in the first one the user spawns a few
+     * black deers. Executing the command creates the flock. In the second step,
+     * the user spawns an additional black deer, and re-running the command
+     * updated the flock.
+     * @return success message
+     */
+    @Command(shortDescription = "Fifth group test: flocking. Here all the black deers become a flock.")
+    public String groupTestFive() {
+        GroupData groupData = groups.get("black");
+        assignComponentBehaviorToAll(groupData.getGroupLabel(), groupData.getBehavior(), new FlockComponent(), "cyanDeerSkin");
+        return "Cozy, just like hell.";
+    }
 
 
     /**
@@ -286,6 +311,26 @@ public class MadnessSystem extends BaseComponentSystem {
     private void assignBehaviorToAll(String groupLabel, String behavior, @Nullable String newGroupSkin) {
         for (EntityRef entityRef : entityManager.getEntitiesWith(GroupTagComponent.class)) {
             if (entityRef.getComponent(GroupTagComponent.class).groups.contains(groupLabel)) {
+                assignBehaviorToEntity(entityRef, behavior, newGroupSkin);
+            }
+        }
+    }
+
+    /**
+     * Assign the same behavior and a specific component to all entities with the same group label.
+     *
+     * @param groupLabel
+     * @param behavior
+     * @param component
+     * @param newGroupSkin
+     */
+    private void assignComponentBehaviorToAll(String groupLabel, String behavior, Component component, @Nullable String newGroupSkin) {
+        for (EntityRef entityRef : entityManager.getEntitiesWith(GroupTagComponent.class)) {
+            if (entityRef.getComponent(GroupTagComponent.class).groups.contains(groupLabel)) {
+                if(!entityRef.hasComponent(component.getClass())) {
+                    entityRef.saveComponent(component);
+                }
+
                 assignBehaviorToEntity(entityRef, behavior, newGroupSkin);
             }
         }
