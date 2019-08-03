@@ -7,7 +7,7 @@
       "animation" : "WildAnimals:deerIdle",
       "loop" : true
     },
-  "GroupTag" : {
-    "groupLabel" : "magenta"
-  }
+    "GroupTag" : {
+      "groups" : [ "yellow" ]
+    }
  }

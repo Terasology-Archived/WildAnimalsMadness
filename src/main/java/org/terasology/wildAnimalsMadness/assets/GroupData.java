@@ -23,10 +23,16 @@ import org.terasology.assets.AssetData;
 public class GroupData implements AssetData {
 
     public String groupLabel;
-    public Boolean needsHivemind;
+    public Boolean needsHive;
     public String behavior;
 
     public GroupData() {
+    }
+
+    public GroupData(String groupLabel, Boolean needsHive, String behavior) {
+        this.groupLabel = groupLabel;
+        this.needsHive = needsHive;
+        this.behavior = behavior;
     }
 
     public String getGroupLabel() {
@@ -37,12 +43,12 @@ public class GroupData implements AssetData {
         this.groupLabel = groupLabel;
     }
 
-    public Boolean getNeedsHivemind() {
-        return needsHivemind;
+    public Boolean getNeedsHive() {
+        return needsHive;
     }
 
-    public void setNeedsHivemind(Boolean needsHivemind) {
-        this.needsHivemind = needsHivemind;
+    public void setNeedsHive(Boolean needsHive) {
+        this.needsHive = needsHive;
     }
 
     public String getBehavior() {

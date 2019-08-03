@@ -21,8 +21,9 @@ import org.terasology.entitySystem.entity.EntityRef;
 import java.util.HashSet;
 import java.util.Set;
 
-public class HivemindComponent implements Component {
+public class HiveMindComponent implements Component {
 
     public String groupLabel;
+    public String behavior;
     public Set<EntityRef> groupMembers = new HashSet<>();
 }

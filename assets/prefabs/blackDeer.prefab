@@ -8,6 +8,9 @@
       "loop" : true
     },
   "Behavior" : {
-    "tree" : "Behaviors:critter"
-  }
+    "tree" : "still"
+  },
+   "GroupTag" : {
+     "groups" : [ "black" ]
+   }
  }

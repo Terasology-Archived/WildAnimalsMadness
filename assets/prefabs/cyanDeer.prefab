@@ -10,7 +10,7 @@
   "Behavior" : {
     "tree" : "still"
   },
-     "GroupTag" : {
-       "groupLabel" : "magenta"
-     }
+ "GroupTag" : {
+   "groups" : [ "magenta", "cyan" ]
  }
+}

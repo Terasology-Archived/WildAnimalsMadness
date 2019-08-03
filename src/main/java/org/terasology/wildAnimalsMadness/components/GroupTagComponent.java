@@ -33,11 +33,6 @@ import java.util.List;
 public class GroupTagComponent implements Component {
 
     /**
-     * ID of a pre-defined group.
-     */
-    public String groupLabel;
-
-    /**
      * Groups to which the entity belong.
      * This is necessary since a single entity can
      * belong to multiple groups. This list will
@@ -53,7 +48,7 @@ public class GroupTagComponent implements Component {
     /**
      * Backup fields are used to preserve the original
      * entity state before joining a group.
-     * TODO: assess need for a parametrized 2D list
+     * TODO: assess need for a parametrized matrix
      */
     public BehaviorTree backupBT;
 
