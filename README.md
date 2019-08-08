@@ -61,14 +61,14 @@ There are four new creatures in this module (CMYK Deers), all having `WildAnimal
 
 ### Assets
 
-There is a new asset `Group` used to compile all group information when the game is loaded (this allows the user to define/work with groups using JSON files only, similarly to behaviors and prefabs). **This functionaliy is disabled at this time due to a bug on Gestalt**.
+There is a new asset `Group` used to compile all group information when the game is loaded (this allows the user to define/work with groups using JSON files only, similarly to behaviors and prefabs). **Requires: [MovingBlocks/Terasology PR#3717](https://github.com/MovingBlocks/Terasology/pull/3717)**.
 
 ### Commands 
 The main system is composed of seven commands:
 
 **Load test data:**
    * **Command:** `loadTestData`
-   * **Objective:** Emulate the asset loading (currently disabled - see above).
+   * **Objective:** Test the new Group asset and populate the test data pool.
 
 * **First Group Test:**
      * **Command:** `groupTestOne`
