@@ -1,5 +1,5 @@
 {
   "groupLabel": "magenta",
-  "needsHivemind": "false",
+  "needsHive": "false",
   "behavior": "Behaviors:critter"
 }

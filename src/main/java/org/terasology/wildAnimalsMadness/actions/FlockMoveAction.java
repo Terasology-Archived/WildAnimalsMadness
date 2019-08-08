@@ -80,10 +80,10 @@ public class FlockMoveAction extends BaseAction {
         targetDirection.sub(moveComponent.target, worldPos);
         Vector3f drive = new Vector3f();
 
-        // TODO review - is the yaw here being calculated properly?
         float yaw = (float) Math.atan2(targetDirection.x, targetDirection.z);
+        if((targetDirection.x < distance) && (targetDirection.y < distance) && (targetDirection.z < distance)) {
 
-        if (targetDirection.x * targetDirection.x + targetDirection.z * targetDirection.z <= distance * distance) {
+        //if (targetDirection.x * targetDirection.x + targetDirection.z * targetDirection.z <= distance * distance) {
             drive.set(0, 0, 0);
             reachedTarget = true;
         } else {

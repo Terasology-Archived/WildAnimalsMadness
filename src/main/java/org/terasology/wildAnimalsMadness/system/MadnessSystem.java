@@ -15,9 +15,12 @@
  */
 package org.terasology.wildAnimalsMadness.system;
 
+import com.google.common.collect.Lists;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.terasology.assets.ResourceUrn;
 import org.terasology.assets.management.AssetManager;
+import org.terasology.audio.StaticSound;
 import org.terasology.entitySystem.Component;
 import org.terasology.logic.behavior.BehaviorComponent;
 import org.terasology.logic.behavior.CollectiveBehaviorComponent;
@@ -28,7 +31,8 @@ import org.terasology.logic.behavior.core.Actor;
 import org.terasology.logic.characters.CharacterMovementComponent;
 import org.terasology.rendering.logic.SkeletalMeshComponent;
 import org.terasology.utilities.Assets;
-import org.terasology.wildAnimalsMadness.assets.GroupData;
+import org.terasology.logic.behavior.asset.Group;
+import org.terasology.logic.behavior.asset.GroupData;
 import org.terasology.wildAnimalsMadness.components.FlockComponent;
 import org.terasology.wildAnimalsMadness.components.GroupTagComponent;
 import org.terasology.entitySystem.entity.EntityManager;
@@ -52,71 +56,57 @@ public class MadnessSystem extends BaseComponentSystem {
     @In
     private AssetManager assetManager;
 
-    //private final Map<String,Group> groups = new HashMap<>();
-    private final Map<String,GroupData> groups = new HashMap<>();
-    private final Map<String,EntityRef> hives = new HashMap<>();
+    private final Map<String, Group> groupsFromAssets = new HashMap<>();
+    private final Map<String, GroupData> groups = new HashMap<>();
+    private final Map<String, EntityRef> hives = new HashMap<>();
 
     @Override
     public void initialise() {
-
         /**
-         * This should recover all .group assets and load them into the system
-         * Not working due to a bug on Gestalt - see discussion on v5.1.5         *
+         * Loads all Group (.group) assets registered
          */
-//        List<ResourceUrn> uris = Lists.newArrayList();
-//        uris.addAll(new ArrayList<>(assetManager.getAvailableAssets(StaticSound.class)));
-//        for (ResourceUrn uri : assetManager.getAvailableAssets(Group.class)) {
-//            try {
-//                Optional<Group> asset = assetManager.getAsset(uri, Group.class);
-//                asset.ifPresent(group -> groups.put(group.getGroupData().getGroupLabel(),group));
-//                if(groups.isEmpty()) {
-//                    logger.info("That's a big nope.", uri);
-//                } else {
-//                    logger.info("Something happened", uri);
-//
-//                }
-//            } catch (RuntimeException e) {
-//                logger.info("Failed to load groups.", uri, e);
-//            }
-//        }
+        List<ResourceUrn> uris = Lists.newArrayList();
+        uris.addAll(new ArrayList<>(assetManager.getAvailableAssets(StaticSound.class)));
+
+        for (ResourceUrn uri : assetManager.getAvailableAssets(Group.class)) {
+            try {
+                Optional<Group> asset = assetManager.getAsset(uri, Group.class);
+                asset.ifPresent(group -> groupsFromAssets.put(group.getGroupData().getGroupLabel(), group));
+            } catch (RuntimeException e) {
+                logger.info("Failed to load groups.", uri, e);
+            }
+        }
 
     }
 
     /**
      * Manually populates the groups map using GroupData
-     * TODO: remove param constructor on GroupData
+     * Group "magenta" is loaded from disk if the correspondent
+     * file (magenta.group) is available. This serves as a
+     * test for the new group asset as well.
      */
     @Command(shortDescription = "Initialise test data")
     public String loadTestData() {
-        groups.put("yellow",new GroupData("yellow",false,"Behaviors:critter"));
-        logger.info("group: yellow registered");
-        groups.put("cyan",new GroupData("cyan",true,"Behaviors:critter"));
-        logger.info("group: cyan registered");
-        groups.put("magenta",new GroupData("magenta",true,"Behaviors:critter"));
-        logger.info("group: magenta registered");
-        groups.put("black",new GroupData("black",false,"flock"));
-        logger.info("group: black registered");
+        groups.put("yellow", new GroupData("yellow", false, "Behaviors:critter"));
+        logger.info("Group: yellow registered");
+        groups.put("cyan", new GroupData("cyan", true, "Behaviors:critter"));
+        logger.info("Group: cyan registered");
+        if((!groupsFromAssets.isEmpty()) && groupsFromAssets.containsKey("magenta")) {
+            groups.put("magenta", groupsFromAssets.get("magenta").getGroupData());
+            logger.info("Group: magenta loaded from disk");
+
+        } else {
+            groups.put("magenta", new GroupData("magenta", true, "Behaviors:critter"));
+            logger.info("Group: magenta registered");
+        }
+
+        groups.put("black", new GroupData("black", false, "flock"));
+        logger.info("Group: black registered");
 
         //Creates all necessary hives
         initHives();
         return "All systems online. Hives registered: " + hives.size();
     }
-
-    /**
-     * Base Group Test:
-     * Objective: restore group parameters from a file.
-     * Issues: permission rights on modules/WildAnimalsMadness folder.
-     * Currently replaced by loadTestData.
-     * Needs further investigation.
-     * @return status message
-     */
-//    @Command(shortDescription = "Fifth group test: loads group information from .group file.")
-//    public String groupTestFive() {
-//        assetManager = new AssetManager(new ModuleAwareAssetTypeManager());
-//        Optional<Group> magentaGroup = assetManager.getAsset("engine:magenta", Group.class);
-//        return "Loaded group magenta";// + magentaGroup.get().getGroupLabel();
-//
-//    }
 
     /**
      * First Group Test:
@@ -282,6 +272,15 @@ public class MadnessSystem extends BaseComponentSystem {
         }
 
         return "The hives are dead. LONG LIVE THE PHALANX";
+    }
+
+    @Command(shortDescription = "Clean-up sentient entities.")
+    public String terminate() {
+        for (EntityRef entityRef : entityManager.getEntitiesWith(BehaviorComponent.class)) {
+            entityRef.destroy();
+        }
+
+        return "They will not be back.";
     }
 
     private void initHives() {
