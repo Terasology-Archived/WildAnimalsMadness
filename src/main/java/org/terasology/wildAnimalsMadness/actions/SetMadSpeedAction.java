@@ -22,7 +22,7 @@ import org.terasology.logic.behavior.core.BaseAction;
 import org.terasology.logic.behavior.core.BehaviorState;
 import org.terasology.logic.characters.CharacterMovementComponent;
 import org.terasology.rendering.nui.properties.Range;
-import org.terasology.wildAnimalsMadness.components.HiveMindComponent;
+import org.terasology.logic.behavior.GroupMindComponent;
 
 @BehaviorAction(name = "set_mad_speed")
 public class SetMadSpeedAction extends BaseAction {
@@ -32,8 +32,8 @@ public class SetMadSpeedAction extends BaseAction {
 
     @Override
     public void construct(Actor actor) {
-        if(actor.hasComponent(HiveMindComponent.class)) {
-            HiveMindComponent hivemindComponent = actor.getComponent(HiveMindComponent.class);
+        if(actor.hasComponent(GroupMindComponent.class)) {
+            GroupMindComponent hivemindComponent = actor.getComponent(GroupMindComponent.class);
 
             if(!hivemindComponent.groupMembers.isEmpty()) {
                 for (EntityRef entityRef : hivemindComponent.groupMembers) {

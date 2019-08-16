@@ -34,7 +34,7 @@ import org.terasology.utilities.Assets;
 import org.terasology.logic.behavior.asset.Group;
 import org.terasology.logic.behavior.asset.GroupData;
 import org.terasology.wildAnimalsMadness.components.FlockComponent;
-import org.terasology.wildAnimalsMadness.components.GroupTagComponent;
+import org.terasology.logic.behavior.GroupTagComponent;
 import org.terasology.entitySystem.entity.EntityManager;
 import org.terasology.entitySystem.entity.EntityRef;
 import org.terasology.entitySystem.systems.RegisterMode;
@@ -42,7 +42,7 @@ import org.terasology.entitySystem.systems.RegisterSystem;
 import org.terasology.entitySystem.systems.BaseComponentSystem;
 import org.terasology.registry.In;
 import org.terasology.logic.console.commandSystem.annotations.Command;
-import org.terasology.wildAnimalsMadness.components.HiveMindComponent;
+import org.terasology.logic.behavior.GroupMindComponent;
 
 import javax.annotation.Nullable;
 import java.util.*;
@@ -164,7 +164,7 @@ public class MadnessSystem extends BaseComponentSystem {
         populateHive(hiveEntity, "yellowDeerSkin");
         updateSpeedToAll(hiveEntity);
 
-        return "Entities in the hive: " + hives.get("cyan").getComponent(HiveMindComponent.class).groupMembers.size() + ". Run, deers, run.";
+        return "Entities in the hive: " + hives.get("cyan").getComponent(GroupMindComponent.class).groupMembers.size() + ". Run, deers, run.";
     }
 
     /**
@@ -263,7 +263,7 @@ public class MadnessSystem extends BaseComponentSystem {
      */
     @Command(shortDescription = "Clean-up.")
     public String nuke() {
-        for (EntityRef entityRef : entityManager.getEntitiesWith(HiveMindComponent.class)) {
+        for (EntityRef entityRef : entityManager.getEntitiesWith(GroupMindComponent.class)) {
             entityRef.destroy();
         }
 
@@ -288,7 +288,7 @@ public class MadnessSystem extends BaseComponentSystem {
             for( String groupLabel : groups.keySet()) {
                 if(groups.get(groupLabel).needsHive) {
                     EntityRef hiveEntity = entityManager.create("hiveEntity");
-                    HiveMindComponent hivemindComponent = hiveEntity.getComponent(HiveMindComponent.class);
+                    GroupMindComponent hivemindComponent = hiveEntity.getComponent(GroupMindComponent.class);
                     hivemindComponent.groupLabel = groupLabel;
                     hivemindComponent.behavior = groups.get(groupLabel).getBehavior();
                     hiveEntity.saveComponent(hivemindComponent);
@@ -375,27 +375,27 @@ public class MadnessSystem extends BaseComponentSystem {
     }
 
     private void populateHive(EntityRef hive, @Nullable String newSkin) {
-        HiveMindComponent hiveMindComponent = hive.getComponent(HiveMindComponent.class);
+        GroupMindComponent groupMindComponent = hive.getComponent(GroupMindComponent.class);
         for (EntityRef entityRef : entityManager.getEntitiesWith(GroupTagComponent.class)) {
             GroupTagComponent groupTagComponent = entityRef.getComponent(GroupTagComponent.class);
-            if (groupTagComponent.groups.contains(hiveMindComponent.groupLabel)) {
+            if (groupTagComponent.groups.contains(groupMindComponent.groupLabel)) {
                 if(null != newSkin) {
-                    assignBehaviorToEntity(entityRef, hiveMindComponent.behavior, newSkin);
+                    assignBehaviorToEntity(entityRef, groupMindComponent.behavior, newSkin);
                 }
-                hiveMindComponent.groupMembers.add(entityRef);
+                groupMindComponent.groupMembers.add(entityRef);
             }
         }
-        hive.saveComponent(hiveMindComponent);
-        logger.info("Hive: " + hiveMindComponent.groupLabel + " populated with "
-                + hiveMindComponent.groupMembers.size() + " members.");
+        hive.saveComponent(groupMindComponent);
+        logger.info("Hive: " + groupMindComponent.groupLabel + " populated with "
+                + groupMindComponent.groupMembers.size() + " members.");
     }
 
     private void updateSpeedToAll(EntityRef hiveEntity) {
-        if(hiveEntity.hasComponent(HiveMindComponent.class)) {
-            HiveMindComponent hiveMindComponent = hiveEntity.getComponent(HiveMindComponent.class);
+        if(hiveEntity.hasComponent(GroupMindComponent.class)) {
+            GroupMindComponent groupMindComponent = hiveEntity.getComponent(GroupMindComponent.class);
 
-            if(!hiveMindComponent.groupMembers.isEmpty()) {
-                for (EntityRef entityRef : hiveMindComponent.groupMembers) {
+            if(!groupMindComponent.groupMembers.isEmpty()) {
+                for (EntityRef entityRef : groupMindComponent.groupMembers) {
                     CharacterMovementComponent characterMovementComponent = entityRef.getComponent(CharacterMovementComponent.class);
                     characterMovementComponent.speedMultiplier = 2.5f;
                     entityRef.saveComponent(characterMovementComponent);
@@ -407,10 +407,10 @@ public class MadnessSystem extends BaseComponentSystem {
 
     private Set<Actor> getActorsFromHive(EntityRef hiveEntity) {
         Set<Actor> hiveActors = new HashSet<>();
-        HiveMindComponent hiveMindComponent = hiveEntity.getComponent(HiveMindComponent.class);
+        GroupMindComponent groupMindComponent = hiveEntity.getComponent(GroupMindComponent.class);
 
-        if(!hiveMindComponent.groupMembers.isEmpty()) {
-            for (EntityRef entityRef : hiveMindComponent.groupMembers) {
+        if(!groupMindComponent.groupMembers.isEmpty()) {
+            for (EntityRef entityRef : groupMindComponent.groupMembers) {
                 Actor actor = new Actor(entityRef);
                 hiveActors.add(actor);
             }
