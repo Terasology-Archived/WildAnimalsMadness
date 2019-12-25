@@ -2,7 +2,7 @@
 
       sequence : [
         {
-          set_mad_speed : { speedMultiplier: 0.3 }
+          set_mad_speed : { speedMultiplier: 0.9 }
         },
         {
           animation : {
