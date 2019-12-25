@@ -8,7 +8,7 @@
   },
   {
     set_mad_speed : {
-      speedMultiplier: 2.5
+      speedMultiplier: 7.5
     }
 
   },
