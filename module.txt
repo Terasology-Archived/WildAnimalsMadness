@@ -1,16 +1,17 @@
 {
-    "id" : "WildAnimalsMadness",
-    "version" : "0.2.0",
-    "author" : "casals",
-    "displayName" : "WildAnimalsMadness",
-    "description" : "Terasology test module for GSoC19",
-    "dependencies" : [
-        {"id" : "Behaviors", "minVersion" : "0.2.0"},
-        {"id" : "Pathfinding", "minVersion" : "0.3.0"},
-        {"id" : "NameGenerator", "minVersion" : "0.4.0"},
+    "id": "WildAnimalsMadness",
+    "version": "1.0.0",
+    "author": "casals",
+    "displayName": "Wild Animals - Madness",
+    "description": "Terasology test module for GSoC19",
+    "dependencies": [
+        { "id": "Behaviors", "minVersion": "0.2.0" },
+        { "id": "Drops", "minVersion": "1.0.1" },
+        { "id": "Pathfinding", "minVersion": "0.3.0" },
+        { "id": "NameGenerator", "minVersion": "0.4.0" },
         { "id": "WildAnimals", "minVersion": "0.2.0" },
-        {"id" : "WorldlyTooltipAPI", "minVersion" : "0.1.0"}
+        { "id": "WorldlyTooltipAPI", "minVersion": "0.1.0" }
     ],
-    "isServerSideOnly" : false,
-    "isAugmentation": true
+    "isServerSideOnly": false,
+    "isLibrary": true
 }
