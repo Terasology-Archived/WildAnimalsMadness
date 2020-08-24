@@ -21,8 +21,8 @@ import org.terasology.logic.behavior.core.Actor;
 import org.terasology.logic.behavior.core.BaseAction;
 import org.terasology.logic.behavior.core.BehaviorState;
 import org.terasology.logic.characters.CharacterMovementComponent;
-import org.terasology.rendering.nui.properties.Range;
 import org.terasology.logic.behavior.GroupMindComponent;
+import org.terasology.nui.properties.Range;
 
 @BehaviorAction(name = "set_mad_speed")
 public class SetMadSpeedAction extends BaseAction {
@@ -32,10 +32,10 @@ public class SetMadSpeedAction extends BaseAction {
 
     @Override
     public void construct(Actor actor) {
-        if(actor.hasComponent(GroupMindComponent.class)) {
+        if (actor.hasComponent(GroupMindComponent.class)) {
             GroupMindComponent hivemindComponent = actor.getComponent(GroupMindComponent.class);
 
-            if(!hivemindComponent.groupMembers.isEmpty()) {
+            if (!hivemindComponent.groupMembers.isEmpty()) {
                 for (EntityRef entityRef : hivemindComponent.groupMembers) {
                     CharacterMovementComponent characterMovementComponent = entityRef.getComponent(CharacterMovementComponent.class);
                     characterMovementComponent.speedMultiplier = speedMultiplier;

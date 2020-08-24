@@ -27,7 +27,7 @@ import org.terasology.math.TeraMath;
 import org.terasology.math.geom.Vector3f;
 import org.terasology.minion.move.MinionMoveComponent;
 import org.terasology.minion.move.MoveToAction;
-import org.terasology.rendering.nui.properties.Range;
+import org.terasology.nui.properties.Range;
 import org.terasology.wildAnimalsMadness.components.FlockComponent;
 
 @BehaviorAction(name = "flock_move")
