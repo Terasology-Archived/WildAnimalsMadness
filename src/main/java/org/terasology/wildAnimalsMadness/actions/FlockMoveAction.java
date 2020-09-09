@@ -1,28 +1,15 @@
-/*
- * Copyright 2019 MovingBlocks
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
+// Copyright 2020 The Terasology Foundation
+// SPDX-License-Identifier: Apache-2.0
 package org.terasology.wildAnimalsMadness.actions;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.terasology.logic.behavior.BehaviorAction;
-import org.terasology.logic.behavior.core.Actor;
-import org.terasology.logic.behavior.core.BaseAction;
-import org.terasology.logic.behavior.core.BehaviorState;
-import org.terasology.logic.characters.CharacterMoveInputEvent;
-import org.terasology.logic.location.LocationComponent;
+import org.terasology.engine.logic.behavior.BehaviorAction;
+import org.terasology.engine.logic.behavior.core.Actor;
+import org.terasology.engine.logic.behavior.core.BaseAction;
+import org.terasology.engine.logic.behavior.core.BehaviorState;
+import org.terasology.engine.logic.characters.CharacterMoveInputEvent;
+import org.terasology.engine.logic.location.LocationComponent;
 import org.terasology.math.TeraMath;
 import org.terasology.math.geom.Vector3f;
 import org.terasology.minion.move.MinionMoveComponent;
@@ -32,9 +19,9 @@ import org.terasology.wildAnimalsMadness.components.FlockComponent;
 
 @BehaviorAction(name = "flock_move")
 public class FlockMoveAction extends BaseAction {
-    private static Logger logger = LoggerFactory.getLogger(MoveToAction.class);
+    private static final Logger logger = LoggerFactory.getLogger(MoveToAction.class);
     @Range(min = 0, max = 10)
-    private float distance = 0.2f;
+    private final float distance = 0.2f;
 
 
     @Override
@@ -81,9 +68,10 @@ public class FlockMoveAction extends BaseAction {
         Vector3f drive = new Vector3f();
 
         float yaw = (float) Math.atan2(targetDirection.x, targetDirection.z);
-        if((targetDirection.x < distance) && (targetDirection.y < distance) && (targetDirection.z < distance)) {
+        if ((targetDirection.x < distance) && (targetDirection.y < distance) && (targetDirection.z < distance)) {
 
-        //if (targetDirection.x * targetDirection.x + targetDirection.z * targetDirection.z <= distance * distance) {
+            //if (targetDirection.x * targetDirection.x + targetDirection.z * targetDirection.z <= distance * 
+            // distance) {
             drive.set(0, 0, 0);
             reachedTarget = true;
         } else {
@@ -92,7 +80,8 @@ public class FlockMoveAction extends BaseAction {
         }
         float requestedYaw = 180f + yaw * TeraMath.RAD_TO_DEG;
 
-        CharacterMoveInputEvent wantedInput = new CharacterMoveInputEvent(0, 0, requestedYaw, drive, false, false, moveComponent.jumpMode, (long) (actor.getDelta() * 1000));
+        CharacterMoveInputEvent wantedInput = new CharacterMoveInputEvent(0, 0, requestedYaw, drive, false, false,
+                moveComponent.jumpMode, (long) (actor.getDelta() * 1000));
         actor.getEntity().send(wantedInput);
 
 
