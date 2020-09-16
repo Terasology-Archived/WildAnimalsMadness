@@ -4,6 +4,8 @@ package org.terasology.wildAnimalsMadness.actions;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.terasology.behaviors.minion.move.MinionMoveComponent;
+import org.terasology.behaviors.minion.move.MoveToAction;
 import org.terasology.engine.logic.behavior.BehaviorAction;
 import org.terasology.engine.logic.behavior.core.Actor;
 import org.terasology.engine.logic.behavior.core.BaseAction;
@@ -12,8 +14,6 @@ import org.terasology.engine.logic.characters.CharacterMoveInputEvent;
 import org.terasology.engine.logic.location.LocationComponent;
 import org.terasology.math.TeraMath;
 import org.terasology.math.geom.Vector3f;
-import org.terasology.minion.move.MinionMoveComponent;
-import org.terasology.minion.move.MoveToAction;
 import org.terasology.nui.properties.Range;
 import org.terasology.wildAnimalsMadness.components.FlockComponent;
 
